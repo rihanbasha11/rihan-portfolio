@@ -1,8 +1,10 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Trophy, Medal, Star } from 'lucide-react';
 import Reveal from '../components/Reveal';
 import { achievements, activities } from '../data/portfolio';
 
+const EASE = [0.16, 1, 0.3, 1];
 const iconMap = { quantum: Trophy, sih: Medal, amazon: Star };
 
 export default function Achievements() {
@@ -12,53 +14,60 @@ export default function Achievements() {
         <Reveal>
           <p className="section-kicker">05 / Signals</p>
           <h2 id="ach-heading" className="section-heading">
-            Beyond the<br />
-            <em className="serif">résumé.</em>
+            Beyond the<br /><em className="serif">résumé.</em>
           </h2>
         </Reveal>
 
-        {/* Achievements grid */}
         <div className="ach-grid" role="list">
           {achievements.map((ach, i) => {
             const Icon = iconMap[ach.id] ?? Trophy;
             return (
-              <Reveal key={ach.id} delay={i * 0.1}>
-                <article
+              <Reveal key={ach.id} delay={i * 0.12} y={24}>
+                <motion.article
                   className={`ach-card${ach.highlight ? ' ach-card-highlight' : ''}`}
                   role="listitem"
                   aria-label={ach.title}
+                  whileHover={ach.highlight
+                    ? { scale: 1.02, transition: { duration: 0.25, ease: EASE } }
+                    : { y: -4,      transition: { duration: 0.25, ease: EASE } }
+                  }
                 >
-                  {ach.highlight && (
-                    <div className="ach-highlight-bar" aria-hidden="true" />
-                  )}
+                  {ach.highlight && <div className="ach-highlight-bar" aria-hidden="true" />}
+
                   <div className="ach-card-icon" aria-hidden="true">
                     <Icon size={20} />
                   </div>
+
                   <div className="ach-big-label">
                     <span className="ach-big-value">{ach.label}</span>
                     <span className="ach-big-sub">{ach.sublabel}</span>
                   </div>
+
                   <h3 className="ach-title">{ach.title}</h3>
                   <span className={`ach-role-badge${ach.highlight ? ' ach-role-badge-highlight' : ''}`}>
                     {ach.role}
                   </span>
                   <p className="ach-desc">{ach.description}</p>
-                </article>
+                </motion.article>
               </Reveal>
             );
           })}
         </div>
 
-        {/* Leadership & Activities */}
+        {/* Leadership */}
         <Reveal delay={0.15}>
           <div className="activities-section" aria-label="Leadership and activities">
-            <p className="section-kicker" style={{ marginBottom: '28px' }}>Leadership & Activities</p>
+            <p className="section-kicker" style={{ marginBottom: '24px' }}>Leadership & Activities</p>
             <div className="activities-grid">
               {activities.map(a => (
-                <div key={a.title} className="activity-card">
+                <motion.div
+                  key={a.title}
+                  className="activity-card"
+                  whileHover={{ y: -3, transition: { duration: 0.22, ease: EASE } }}
+                >
                   <h3 className="activity-title">{a.title}</h3>
                   <p className="activity-desc">{a.description}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

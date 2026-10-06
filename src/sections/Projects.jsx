@@ -4,16 +4,21 @@ import { ArrowRight, ChevronDown, ExternalLink, Workflow, Database, BarChart3 } 
 import Reveal from '../components/Reveal';
 import { projects } from '../data/portfolio';
 
-const iconMap = { 'inventory-agent': Workflow, 'rag-pipeline': Database, 'analytics-dashboard': BarChart3 };
+const EASE = [0.16, 1, 0.3, 1];
+const iconMap = {
+  'inventory-agent':    Workflow,
+  'rag-pipeline':       Database,
+  'analytics-dashboard':BarChart3,
+};
 
 function FlowViz({ steps }) {
   return (
-    <div className="flow-viz" aria-label="Project workflow visualization" role="img">
+    <div className="flow-viz" aria-label="Project workflow" role="img">
       {steps.map((step, i) => (
         <React.Fragment key={step}>
           <span className="flow-step">{step}</span>
           {i < steps.length - 1 && (
-            <ArrowRight size={12} className="flow-arrow" aria-hidden="true" />
+            <ArrowRight size={11} className="flow-arrow" aria-hidden="true" />
           )}
         </React.Fragment>
       ))}
@@ -26,27 +31,30 @@ function ProjectCard({ project, index, featured }) {
   const Icon = iconMap[project.id] ?? Workflow;
 
   return (
-    <Reveal delay={index * 0.08}>
-      <article
+    <Reveal delay={index * 0.1} y={28}>
+      <motion.article
         className={`project-card${featured ? ' project-card-featured' : ''}`}
         aria-label={project.title}
+        whileHover="hover"
+        initial="rest"
+        animate="rest"
       >
         {/* Top row */}
         <div className="project-card-top">
           <div className="project-num-icon">
             <span className="project-num">{project.num}</span>
             <div className="project-icon-wrap" aria-hidden="true">
-              <Icon size={20} />
+              <Icon size={18} />
             </div>
           </div>
           <span className="project-type-badge">{project.type}</span>
         </div>
 
-        {/* Title & tagline */}
+        {/* Title */}
         <h3 className="project-title">{project.title}</h3>
         <p className="project-tagline">{project.tagline}</p>
 
-        {/* Flow visualization */}
+        {/* Flow */}
         <FlowViz steps={project.flow} />
 
         {/* Description */}
@@ -71,7 +79,7 @@ function ProjectCard({ project, index, featured }) {
             <span>My contribution</span>
             <motion.span
               animate={{ rotate: open ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.22, ease: EASE }}
             >
               <ChevronDown size={15} aria-hidden="true" />
             </motion.span>
@@ -84,7 +92,7 @@ function ProjectCard({ project, index, featured }) {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.3, ease: EASE }}
                 style={{ overflow: 'hidden' }}
               >
                 <p className="project-contrib-text">{project.myContribution}</p>
@@ -98,7 +106,7 @@ function ProjectCard({ project, index, featured }) {
           </AnimatePresence>
         </div>
 
-        {/* Footer: stack + link */}
+        {/* Footer */}
         <div className="project-footer">
           <div className="project-stack" aria-label="Technologies">
             {project.stack.map(s => (
@@ -106,13 +114,8 @@ function ProjectCard({ project, index, featured }) {
             ))}
           </div>
           {project.projectLink !== '[ADD PROJECT LINK]' ? (
-            <a
-              href={project.projectLink}
-              target="_blank"
-              rel="noreferrer"
-              className="project-link"
-              aria-label={`View ${project.title}`}
-            >
+            <a href={project.projectLink} target="_blank" rel="noreferrer"
+               className="project-link" aria-label={`View ${project.title}`}>
               <ExternalLink size={14} />
             </a>
           ) : (
@@ -121,7 +124,7 @@ function ProjectCard({ project, index, featured }) {
             </span>
           )}
         </div>
-      </article>
+      </motion.article>
     </Reveal>
   );
 }
@@ -137,25 +140,22 @@ export default function Projects() {
           <Reveal>
             <p className="section-kicker">03 / Selected Work</p>
             <h2 id="projects-heading" className="section-heading">
-              Projects that show<br />
-              <em className="serif">proof, not promises.</em>
+              Proof, not<br /><em className="serif">promises.</em>
             </h2>
           </Reveal>
-          <Reveal delay={0.1}>
+          <Reveal delay={0.12}>
             <p className="projects-intro">
               Three projects across AI agents, RAG and analytics — built during internships and independent work.
             </p>
           </Reveal>
         </div>
 
-        {/* Featured 2-column */}
         <div className="projects-grid-featured">
           {featured.map((p, i) => (
             <ProjectCard key={p.id} project={p} index={i} featured />
           ))}
         </div>
 
-        {/* Additional projects */}
         {rest.length > 0 && (
           <div className="projects-grid-rest">
             {rest.map((p, i) => (

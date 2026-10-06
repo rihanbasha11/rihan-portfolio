@@ -1,33 +1,38 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import Reveal from '../components/Reveal';
 import { skillGroups } from '../data/portfolio';
 
+const EASE = [0.16, 1, 0.3, 1];
+
 function SkillGroup({ group, index }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '0px 0px -60px 0px' });
+  const ref    = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '0px 0px -50px 0px' });
 
   return (
     <motion.div
       ref={ref}
       className={`skill-group${group.accent ? ' skill-group-accent' : ''}`}
-      initial={{ opacity: 0, y: 18 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
+      initial={{ opacity: 0, x: 28 }}
+      animate={inView ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 0.55, ease: EASE, delay: index * 0.1 }}
     >
-      <div className="skill-group-label" aria-label={`${group.label} skills`}>
+      <div className="skill-group-label">
         {group.label}
         {group.accent && <span className="skill-group-accent-badge">Core</span>}
       </div>
       <ul className="skill-list" role="list">
-        {group.skills.map(skill => (
-          <li key={skill}>
+        {group.skills.map((skill, i) => (
+          <motion.li
+            key={skill}
+            initial={{ opacity: 0, scale: 0.88 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.35, ease: EASE, delay: index * 0.1 + i * 0.04 }}
+          >
             <span className={`skill-pill${group.accent ? ' skill-pill-accent' : ''}`}>
               {skill}
             </span>
-          </li>
+          </motion.li>
         ))}
       </ul>
     </motion.div>
@@ -43,8 +48,7 @@ export default function Skills() {
             <div className="skills-left">
               <p className="section-kicker light">04 / Toolkit</p>
               <h2 id="skills-heading" className="section-heading light">
-                Tools I actually<br />
-                <em className="serif">work with.</em>
+                Tools I actually<br /><em className="serif">work with.</em>
               </h2>
               <p className="skills-note">
                 Programming, AI tooling, workflow automation and the platforms I use across
@@ -52,7 +56,6 @@ export default function Skills() {
               </p>
             </div>
           </Reveal>
-
           <div className="skills-right">
             {skillGroups.map((group, i) => (
               <SkillGroup key={group.label} group={group} index={i} />
